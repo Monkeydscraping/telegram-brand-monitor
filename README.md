@@ -13,6 +13,8 @@ Real output, keyword `bitcoin`, two channels, second run of the day:
 
 The five mentions from the first run weren't repeated. That's the point.
 
+Step-by-step walkthrough on Dev.to: [How I monitor brand mentions on Telegram](https://dev.to/monkeydscraping/how-i-monitor-brand-mentions-on-telegram-no-account-no-phone-number-3jln).
+
 ## Two ways to watch
 
 **1. Watch the channels that matter (recommended).** You list the channels, it checks them for your keywords over the last few days. Fresh, cheap, no noise.
