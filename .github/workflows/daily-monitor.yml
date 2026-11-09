@@ -1,0 +1,38 @@
+name: Daily Telegram monitor
+
+on:
+  schedule:
+    - cron: "0 8 * * *"   # every day at 08:00 UTC
+  workflow_dispatch:       # or run it by hand from the Actions tab
+
+jobs:
+  monitor:
+    if: ${{ vars.KEYWORDS != '' }}   # skipped until you set the KEYWORDS variable
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: pip install -r requirements.txt
+      - name: Remember mentions already reported
+        uses: actions/cache/restore@v4
+        with:
+          path: seen.json
+          key: seen-${{ github.run_id }}
+          restore-keys: seen-
+      - run: python monitor.py --days 2
+        env:
+          KEYWORDS: ${{ vars.KEYWORDS }}
+          CHANNELS: ${{ vars.CHANNELS }}
+          APIFY_TOKEN: ${{ secrets.APIFY_TOKEN }}
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+      - uses: actions/cache/save@v4
+        if: ${{ always() && hashFiles('seen.json') != '' }}
+        with:
+          path: seen.json
+          key: seen-${{ github.run_id }}
+      - uses: actions/upload-artifact@v4
+        with:
+          name: new-mentions
+          path: new_mentions.csv
